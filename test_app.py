@@ -56,12 +56,14 @@ class PlantTestCase(unittest.TestCase):
     self.assertEqual(data['message'], 'resource not found')
 
   def test_update_plant(self):
-    res = self.client().patch('/plants/17', json={'is_poisonous':False})
+    res = self.client().patch('/plants/20', json={'is_poisonous':True})
     data = json.loads(res.data)
+
+    plant = Plant.query.filter(Plant.id==20).one_or_none()
 
     self.assertEqual(res.status_code, 200)
     self.assertEqual(data['success'], True)
-    self.assertTrue(data['id'])
+    self.assertEqual(plant.format()['is_poisonous'], True)
 
   def test_400_for_failed_update(self):
     res = self.client().patch('/plants/2')
@@ -72,10 +74,10 @@ class PlantTestCase(unittest.TestCase):
     self.assertEqual(data['message'],'bad request')
 
   def test_delete_plant(self):
-    res = self.client().delete('/plants/8')
+    res = self.client().delete('/plants/11')
     data = json.loads(res.data)
 
-    plant = Plant.query.filter(Plant.id==8).one_or_none()
+    plant = Plant.query.filter(Plant.id==11).one_or_none()
 
     self.assertEqual(res.status_code, 200)
     self.assertEqual(data['success'], True)
